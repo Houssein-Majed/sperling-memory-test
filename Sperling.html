@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paradigme de Sperling - Mémoire Sensorielle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .settings {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .setting-row:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="range"] {
+            width: 200px;
+            accent-color: #667eea;
+        }
+
+        .value-display {
+            min-width: 60px;
+            text-align: right;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .display-area {
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 40px;
+            margin-bottom: 20px;
+        }
+
+        .letter-grid {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .letter {
+            font-size: 48px;
+            font-weight: bold;
+            color: #333;
+            font-family: 'Courier New', monospace;
+        }
+
+        .fixation {
+            font-size: 60px;
+            color: #667eea;
+        }
+
+        .instruction {
+            font-size: 18px;
+            color: #666;
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        input[type="text"] {
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+        }
+
+        .results {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .correct {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .incorrect {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes flash {
+
+            0%,
+            100% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .flash {
+            animation: flash 0.3s;
+        }
+
+        .accordion {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .accordion-header {
+            background: #667eea;
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .accordion-header:hover {
+            background: #5568d3;
+        }
+
+        .arrow {
+            transition: transform 0.3s;
+        }
+
+        .arrow.rotate {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            background: #f8f9fa;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            padding: 0 20px;
+        }
+
+        .accordion-content.open {
+            padding: 20px;
+            max-height: 300px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Paradigme de Sperling</h1>
+        <p class="subtitle">Test de mémoire sensorielle visuelle</p>
+        <div class="accordion">
+            <div class="accordion-header" id="accordionHeader">
+                <span>Description de l'expérience</span>
+                <span class="arrow" id="arrow">▼</span>
+            </div>
+
+            <div class="accordion-content" id="accordionContent">
+                <p>
+                    Cette application reproduit le <strong>paradigme de Sperling</strong>, une expérience classique en
+                    psychologie cognitive
+                    qui permet d'étudier la <strong>mémoire sensorielle visuelle</strong>.
+                </p>
+                <p>
+                    Une grille de lettres apparaît brièvement à l’écran. Votre objectif est de mémoriser un maximum de
+                    lettres.
+                </p>
+                <p>
+                    Après disparition, vous devez saisir les lettres dont vous vous souvenez.
+                </p>
+                <p>
+                    Cette expérience montre que notre mémoire visuelle est très rapide mais très limitée dans le temps.
+                </p>
+            </div>
+        </div>
+        <div class="settings">
+            <div class="setting-row">
+                <label>Nombre de lignes :</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="range" id="rows" min="2" max="5" value="3" step="1">
+                    <span class="value-display" id="rowsValue">3</span>
+                </div>
+            </div>
+            <div class="setting-row">
+                <label>Nombre de colonnes :</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="range" id="cols" min="2" max="6" value="4" step="1">
+                    <span class="value-display" id="colsValue">4</span>
+                </div>
+            </div>
+            <div class="setting-row">
+                <label>Durée d'affichage (ms) :</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="range" id="duration" min="50" max="500" value="50" step="50">
+                    <span class="value-display" id="durationValue">50 ms</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="display-area" id="displayArea">
+            <p class="instruction">
+                Configurez les paramètres ci-dessus, puis cliquez sur "Démarrer" pour commencer l'expérience.
+                <br><br>
+                Un tableau de lettres apparaîtra très brièvement. Essayez de mémoriser un maximum de lettres !
+            </p>
+        </div>
+
+        <div class="controls">
+            <button class="btn-primary" id="startBtn">Démarrer l'essai</button>
+            <button class="btn-secondary hidden" id="resetBtn">Recommencer</button>
+        </div>
+
+        <div class="results hidden" id="results"></div>
+    </div>
+
+    <script>
+        const rowsInput = document.getElementById('rows');
+        const colsInput = document.getElementById('cols');
+        const durationInput = document.getElementById('duration');
+        const rowsValue = document.getElementById('rowsValue');
+        const colsValue = document.getElementById('colsValue');
+        const durationValue = document.getElementById('durationValue');
+        const displayArea = document.getElementById('displayArea');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const resultsDiv = document.getElementById('results');
+
+        let currentLetters = [];
+        let trials = [];
+
+        // Mise à jour des valeurs affichées
+        rowsInput.addEventListener('input', () => {
+            rowsValue.textContent = rowsInput.value;
+        });
+
+        colsInput.addEventListener('input', () => {
+            colsValue.textContent = colsInput.value;
+        });
+
+        durationInput.addEventListener('input', () => {
+            durationValue.textContent = durationInput.value + ' ms';
+        });
+
+        // Génération de lettres aléatoires
+        function generateRandomLetters(rows, cols) {
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const result = [];
+            for (let i = 0; i < rows; i++) {
+                const row = [];
+                for (let j = 0; j < cols; j++) {
+                    row.push(letters[Math.floor(Math.random() * letters.length)]);
+                }
+                result.push(row);
+            }
+            return result;
+        }
+
+        // Affichage de la grille
+        function displayGrid(letters) {
+            const grid = document.createElement('div');
+            grid.className = 'letter-grid';
+            grid.style.gridTemplateColumns = `repeat(${letters[0].length}, 1fr)`;
+
+            letters.forEach(row => {
+                row.forEach(letter => {
+                    const letterDiv = document.createElement('div');
+                    letterDiv.className = 'letter';
+                    letterDiv.textContent = letter;
+                    grid.appendChild(letterDiv);
+                });
+            });
+
+            return grid;
+        }
+
+        // Affichage du fixation cross
+        function showFixation() {
+            displayArea.innerHTML = '<div class="fixation">+</div>';
+        }
+
+        // Affichage vide
+        function showBlank() {
+            displayArea.innerHTML = '';
+        }
+
+        // Affichage de l'input
+        function showInput() {
+            displayArea.innerHTML = `
+                <div class="input-area">
+                    <p class="instruction">Entrez toutes les lettres dont vous vous souvenez :</p>
+                    <input type="text" id="userInput" placeholder="Ex: ABCD" maxlength="${currentLetters.flat().length}">
+                    <button class="btn-primary" id="submitBtn">Valider</button>
+                </div>
+            `;
+
+            document.getElementById('userInput').focus();
+
+            document.getElementById('submitBtn').addEventListener('click', submitAnswer);
+            document.getElementById('userInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') submitAnswer();
+            });
+        }
+
+        // Soumission de la réponse
+        function submitAnswer() {
+            const userInput = document.getElementById('userInput').value.toUpperCase().trim();
+            const correctLetters = currentLetters.flat();
+
+            let correct = 0;
+            const userLetters = userInput.split('');
+
+            // Comptage des lettres correctes (position non importante)
+            const correctLettersCopy = [...correctLetters];
+            userLetters.forEach(letter => {
+                const index = correctLettersCopy.indexOf(letter);
+                if (index !== -1) {
+                    correct++;
+                    correctLettersCopy.splice(index, 1);
+                }
+            });
+
+            const total = correctLetters.length;
+            const percentage = ((correct / total) * 100).toFixed(1);
+
+            trials.push({
+                correct,
+                total,
+                percentage,
+                userInput,
+                correctLetters: correctLetters.join('')
+            });
+
+            showResults();
+        }
+
+        // Affichage des résultats
+        function showResults() {
+            const lastTrial = trials[trials.length - 1];
+
+            resultsDiv.innerHTML = `
+                <h3 style="margin-bottom: 15px; color: #667eea;">Résultats</h3>
+                <div class="result-item">
+                    <span>Lettres affichées :</span>
+                    <span style="font-family: 'Courier New', monospace; font-weight: bold;">${lastTrial.correctLetters}</span>
+                </div>
+                <div class="result-item">
+                    <span>Votre réponse :</span>
+                    <span style="font-family: 'Courier New', monospace; font-weight: bold;">${lastTrial.userInput || '(vide)'}</span>
+                </div>
+                <div class="result-item">
+                    <span>Lettres correctes :</span>
+                    <span class="${lastTrial.correct > 0 ? 'correct' : 'incorrect'}">${lastTrial.correct} / ${lastTrial.total}</span>
+                </div>
+                <div class="result-item">
+                    <span>Taux de réussite :</span>
+                    <span class="${lastTrial.percentage >= 50 ? 'correct' : 'incorrect'}">${lastTrial.percentage}%</span>
+                </div>
+            `;
+
+            if (trials.length > 1) {
+                const avgCorrect = (trials.reduce((sum, t) => sum + t.correct, 0) / trials.length).toFixed(1);
+                const avgPercentage = (trials.reduce((sum, t) => sum + parseFloat(t.percentage), 0) / trials.length).toFixed(1);
+
+                resultsDiv.innerHTML += `
+                    <div class="stats">
+                        <div class="stat-card">
+                            <div class="stat-value">${trials.length}</div>
+                            <div class="stat-label">Essais</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${avgPercentage}%</div>
+                            <div class="stat-label">Moyenne</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            resultsDiv.classList.remove('hidden');
+            resetBtn.classList.remove('hidden');
+            startBtn.textContent = 'Nouvel essai';
+        }
+
+        // Séquence d'essai
+        async function runTrial() {
+            startBtn.disabled = true;
+            resetBtn.classList.add('hidden');
+            resultsDiv.classList.add('hidden');
+
+            const rows = parseInt(rowsInput.value);
+            const cols = parseInt(colsInput.value);
+            const duration = parseInt(durationInput.value);
+
+            currentLetters = generateRandomLetters(rows, cols);
+
+            // 1. Fixation (500ms)
+            showFixation();
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            // 2. Grille de lettres (durée paramétrable)
+            displayArea.innerHTML = '';
+            const grid = displayGrid(currentLetters);
+            displayArea.appendChild(grid);
+            await new Promise(resolve => setTimeout(resolve, duration));
+
+            // 3. Écran blanc (200ms)
+            showBlank();
+            await new Promise(resolve => setTimeout(resolve, 200));
+
+            // 4. Input
+            showInput();
+            startBtn.disabled = false;
+        }
+
+        // Reset
+        function reset() {
+            trials = [];
+            resultsDiv.classList.add('hidden');
+            resetBtn.classList.add('hidden');
+            displayArea.innerHTML = `
+                <p class="instruction">
+                    Configurez les paramètres ci-dessus, puis cliquez sur "Démarrer" pour commencer l'expérience.
+                    <br><br>
+                    Un tableau de lettres apparaîtra très brièvement. Essayez de mémoriser un maximum de lettres !
+                </p>
+            `;
+            startBtn.textContent = 'Démarrer l\'essai';
+        }
+
+        startBtn.addEventListener('click', runTrial);
+        resetBtn.addEventListener('click', reset);
+        // Accordion (description déplier/replier)
+        const header = document.getElementById('accordionHeader');
+        const content = document.getElementById('accordionContent');
+        const arrow = document.getElementById('arrow');
+
+        header.addEventListener('click', () => {
+            content.classList.toggle('open');
+            arrow.classList.toggle('rotate');
+        });
+    </script>
+</body>
+
+</html>
