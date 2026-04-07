@@ -50,13 +50,18 @@
             padding: 20px;
             border-radius: 10px;
             margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .setting-row {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 200px 1fr 80px;
             align-items: center;
             margin-bottom: 15px;
+            gap: 15px;
+            justify-content: center;
         }
 
         .setting-row:last-child {
@@ -69,13 +74,13 @@
         }
 
         input[type="range"] {
-            width: 200px;
+            width: 100%;
             accent-color: #667eea;
         }
 
         .value-display {
             min-width: 60px;
-            text-align: right;
+            text-align: center;
             font-weight: bold;
             color: #667eea;
         }
@@ -288,6 +293,21 @@
             padding: 20px;
             max-height: 300px;
         }
+
+        @media (max-width: 600px) {
+            .setting-row {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .value-display {
+                margin-top: 5px;
+            }
+        }
+
+        .slider-container {
+            width: 100%;
+        }
     </style>
 </head>
 
@@ -322,21 +342,21 @@
         <div class="settings">
             <div class="setting-row">
                 <label>Nombre de lignes :</label>
-                <div style="display: flex; gap: 10px; align-items: center;">
+                <div class="slider-container">
                     <input type="range" id="rows" min="2" max="5" value="3" step="1">
                     <span class="value-display" id="rowsValue">3</span>
                 </div>
             </div>
             <div class="setting-row">
                 <label>Nombre de colonnes :</label>
-                <div style="display: flex; gap: 10px; align-items: center;">
+                <div class="slider-container">
                     <input type="range" id="cols" min="2" max="6" value="4" step="1">
                     <span class="value-display" id="colsValue">4</span>
                 </div>
             </div>
             <div class="setting-row">
                 <label>Durée d'affichage (ms) :</label>
-                <div style="display: flex; gap: 10px; align-items: center;">
+                <div class="slider-container">
                     <input type="range" id="duration" min="50" max="500" value="50" step="50">
                     <span class="value-display" id="durationValue">50 ms</span>
                 </div>
