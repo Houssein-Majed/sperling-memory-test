@@ -71,7 +71,7 @@ Sperling.html
 
 ## 🌐 Démo en ligne
 
-👉 (À compléter avec GitHub Pages si activé)
+👉 https://houssein-majed.github.io/sperling-memory-test/
 
 ---
 
